@@ -1,6 +1,7 @@
 package controller;
 
 import core.db.MemoryUserRepository;
+import core.web.mvc.Controller;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -13,23 +14,21 @@ import jwp.model.User;
 import java.io.IOException;
 import java.util.Collection;
 
-@WebServlet("/user/userList")
-public class ListUserController extends HttpServlet {
+
+public class ListUserController implements Controller {
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    public String execute (HttpServletRequest req, HttpServletResponse resp){
         // 세션에 저장된 정보 가져오기
         HttpSession session = req.getSession();
         User user = (User) session.getAttribute("user");
 
         if (user == null) {
-            resp.sendRedirect("/user/login.jsp");
-            return;
+            return "redirect:/user/login.jsp";
         }
 
         Collection<User> users = MemoryUserRepository.getInstance().findAll();
         req.setAttribute("users",users);
 
-        RequestDispatcher rd = req.getRequestDispatcher("/user/list.jsp");
-        rd.forward(req, resp);
+        return "/user/list.jsp";
     }
 }

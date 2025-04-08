@@ -1,6 +1,7 @@
 package controller;
 
 import core.db.MemoryUserRepository;
+import core.web.mvc.Controller;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -12,10 +13,14 @@ import jwp.model.User;
 
 import java.io.IOException;
 
-@WebServlet("/user/login")
-public class LoginController extends HttpServlet {
+
+public class LoginController implements Controller {
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    public String execute(HttpServletRequest req, HttpServletResponse res) {
+        if (req.getMethod().equals("GET")) {
+            return "/user/login.jsp";
+        }
+
         String userId = req.getParameter("userId");
         String password = req.getParameter("password");
 
@@ -26,17 +31,9 @@ public class LoginController extends HttpServlet {
             HttpSession session = req.getSession();
             session.setAttribute("user", user);
 
-            resp.sendRedirect("/");
-        } else {
-            RequestDispatcher rd = req.getRequestDispatcher("/user/login.jsp");
-            rd.forward(req, resp);
+            return "redirect:/";
         }
 
-    }
-
-    @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        RequestDispatcher rd = req.getRequestDispatcher("/user/login.jsp");
-        rd.forward(req, resp);
+        return "/user/login.jsp";
     }
 }

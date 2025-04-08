@@ -1,5 +1,6 @@
 package controller;
 
+import core.web.mvc.Controller;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -10,14 +11,14 @@ import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 
-@WebServlet("/user/logout")
-public class LogoutController extends HttpServlet {
+
+public class LogoutController implements Controller {
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    public String execute(HttpServletRequest req, HttpServletResponse resp) {
         //세션 데이터 삭제
         HttpSession session = req.getSession();
         session.removeAttribute("user");
 
-        resp.sendRedirect("/");
+        return "/";
     }
 }
